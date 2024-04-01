@@ -1,5 +1,26 @@
+/**
+ * This script fetches all the media items in a specific album and writes the
+ * filenames to a JSON file.
+ *
+ * Usage:
+ *  node getAllInAlbum.js
+ *
+ * The output file content:
+ * ```json
+ * [
+ *   "IMG_20191001_123456.jpg",
+ *   "IMG_20191001_123457.jpg",
+ *   "IMG_20191001_123458.jpg",
+ *   ...
+ * ]
+ * ```
+ */
+
+const fs = require('fs');
 const { list } = require('./list');
 const { search } = require('./search');
+
+console.time('getAllInAlbum.js');
 
 const main = async (albumTitle) => {
   const albums = await list();
@@ -25,6 +46,13 @@ const main = async (albumTitle) => {
   } while (pageToken);
 
   console.log(photoFilenames);
+
+  fs.writeFileSync(
+    `${album.title}.json`,
+    JSON.stringify(photoFilenames, null, 2)
+  );
 };
 
 main(process.env.ALBUM_TITLE);
+
+console.timeEnd('getAllInAlbum.js');
